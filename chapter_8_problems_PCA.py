@@ -4,8 +4,10 @@
 
 
 import numpy as np
+import pandas as pd
 from numpy import linalg as LA
 import matplotlib.pyplot as plt
+from scipy.stats import norm
 import os
 cwd = os.getcwd()
 
@@ -63,6 +65,74 @@ def question(input_list):
 			plt.axvline(0, color='black')
 			plt.show()
 		elif choice == 10:
+			data = np.loadtxt(os.path.join(cwd,'T8-4.DAT'))
+			print data
+			cov_matrix = np.cov(data,rowvar=0)
+			print 'sample covariance matrix\n',cov_matrix
+			values,vectors = LA.eig(cov_matrix)
+			print 'Eigen Vectors\n',vectors
+			print 'variances are \n',values
+			print 'proportion of variance', values*100/np.sum(values)
+			#confidence intervals for the eigenvalues
+			observations = data.shape[0]
+			n_columns = data.shape[1]
+			confidence_fraction = 0.025
+			print '# of observations',observations
+			print '# of columns', n_columns
+			print 'norm.ppf(1 - (confidence_fraction/n_columns))',norm.ppf(1 - (confidence_fraction/n_columns))
+			print 'np.sqrt(2/observations)',np.sqrt(2/float(observations))
+			print 'lower bounds', values/(    1 +    norm.ppf(1 - (confidence_fraction/n_columns))    *   np.sqrt(2/float(observations))  )
+			print 'upper bounds', values/(    1 -    norm.ppf(1 - (confidence_fraction/n_columns))    *   np.sqrt(2/float(observations))  )
+		elif choice == 13:
+			data = np.loadtxt(os.path.join(cwd,'T1-7.DAT'))
+			#print data
+			cov_matrix = np.cov(data,rowvar=0)
+			cor_matrix = np.corrcoef(data,rowvar=0)
+			print 'covariance matrix\n',cov_matrix
+			print 'correlation matrix\n',cor_matrix
+			values,vectors = LA.eig(cov_matrix)
+			print 'Eigen Vectors\n',vectors
+			print 'variances are \n',values
+			print 'proportion of variance', values*100/np.sum(values)
+		elif choice == 18:
+			#data = np.loadtxt(os.path.join(cwd,'T1-9.dat'))
+			data = pd.read_table(os.path.join(cwd,'T1-9.dat'))
+			np_data = data.iloc[:,1:8]
+			cor_matrix = np.corrcoef(np_data,rowvar=0)
+			print 'correlation matrix',cor_matrix
+			values,vectors = LA.eig(cor_matrix)
+			print 'Eigen Vectors\n',vectors
+			print 'variances are \n',values
+			print 'proportion of variance', values*100/np.sum(values)
+
+			#standardize the variables
+			row_means = np.mean(np_data,axis =0)
+			row_std = np.std(np_data,axis=0)
+			stand_data = (np_data-row_means)/row_std
+			cor_matrix = np.corrcoef(stand_data,rowvar=0)
+			print 'correlation matrix',cor_matrix
+			values,vectors = LA.eig(cor_matrix)
+			print 'Eigen Vectors\n',vectors
+			print 'variances are \n',values
+			print 'proportion of variance', values*100/np.sum(values)
+			pc1 = np.matrix(vectors[0])
+			stand_data = np.matrix(stand_data)
+			print pc1
+			first_pc_values = stand_data*np.transpose(pc1)
+			print 'first_pc_values',first_pc_values
+			s1 = pd.Series(first_pc_values,name='values')
+			country = pd.concat([data.iloc[:,0],s1],axis =1)
+			print country
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -71,4 +141,4 @@ def question(input_list):
 
 
 #execution
-question([10])
+question([18])
