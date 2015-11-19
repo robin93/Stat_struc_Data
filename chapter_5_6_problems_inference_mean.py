@@ -156,10 +156,34 @@ def chapter_5(input_list):
 			upperbound_1,lowerbound_1 = means[0,0] + half_width1 , means[0,0] - half_width1
 			print 'Petroleum Bonferroni lowerbound_1,upperbound_1',lowerbound_1,upperbound_1
 
+def chapter_6(input_list):
+	for choice in input_list:
+		if choice == 1:
+			print "Already explained in the example 6.1"
+		if choice == 7:
+			means1 = np.matrix('204.4;556.6')
+			means2 = np.matrix('130;355')
+			cov_matrix1 = np.matrix('13825.3,23823.4;23823.4,73107.4')
+			cov_matrix2 = np.matrix('8632,19616.7;19616.7,55964.5')
+			print 'cov_matrix1',cov_matrix1
+			print 'cov_matrix2',cov_matrix2
+			n1,n2 = 45,55
+			s_pooled = ((n1-1)*(cov_matrix1) + (n2-1)*(cov_matrix2))/float(n1 + n2 -2)
+			print 's_pooled',s_pooled
+			mean_diff = means1-means2
+			print 'mean_diff',mean_diff
+			T_square = (np.transpose(mean_diff)*(((n1*n2/(n2+n1))*(inv(s_pooled)))*mean_diff))
+			print 'T_square',T_square
+			c_square = (n1+n2-2)*(2)*f.ppf(0.95,2,n1+n2-2-1)/(n1+n2-2-1)
+			print 'c_square',c_square
+			a = (inv(s_pooled))*(mean_diff)
+			print 'Linear Combination',a
+
 
 
 
 
 
 #execution
-chapter_5([30])
+#chapter_5([30])
+chapter_6([7])
